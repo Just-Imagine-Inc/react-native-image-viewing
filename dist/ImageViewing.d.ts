@@ -12,6 +12,7 @@ declare type Props = {
     imageIndex: number;
     visible: boolean;
     onRequestClose: () => void;
+    onOrientationChange?: () => void;
     onImageIndexChange?: (imageIndex: number) => void;
     animationType?: "none" | "fade" | "slide";
     backgroundColor?: string;

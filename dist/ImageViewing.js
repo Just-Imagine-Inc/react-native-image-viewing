@@ -17,7 +17,7 @@ const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const SCREEN = Dimensions.get("screen");
 const SCREEN_WIDTH = SCREEN.width;
-function ImageViewing({ images, imageIndex, visible, onRequestClose, onImageIndexChange, animationType = DEFAULT_ANIMATION_TYPE, backgroundColor = DEFAULT_BG_COLOR, swipeToCloseEnabled, doubleTapToZoomEnabled, HeaderComponent, FooterComponent }) {
+function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientationChange, onImageIndexChange, animationType = DEFAULT_ANIMATION_TYPE, backgroundColor = DEFAULT_BG_COLOR, swipeToCloseEnabled, doubleTapToZoomEnabled, HeaderComponent, FooterComponent }) {
     const imageList = React.createRef();
     const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
     const [currentImageIndex, onScroll] = useImageIndexChange(imageIndex, SCREEN);
@@ -33,7 +33,7 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onImageInde
         (_b = (_a = imageList) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.setNativeProps({ scrollEnabled: !isScaled });
         toggleBarsVisible(!isScaled);
     }, [imageList]);
-    return (<Modal transparent visible={visible} animationType={animationType} onRequestClose={onRequestCloseEnhanced} supportedOrientations={["portrait"]}>
+    return (<Modal transparent visible={visible} animationType={animationType} onRequestClose={onRequestCloseEnhanced} onOrientationChange={onOrientationChange} supportedOrientations={["portrait", "landscape"]}>
       <View style={[styles.container, { opacity, backgroundColor }]}>
         <Animated.View style={[styles.header, { transform: headerTransform }]}>
           {typeof HeaderComponent !== "undefined" ? (React.createElement(HeaderComponent, {
