@@ -40,7 +40,7 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onImageInde
         imageIndex: currentImageIndex
     })) : (<ImageDefaultHeader onRequestClose={onRequestCloseEnhanced}/>)}
         </Animated.View>
-        <VirtualizedList ref={imageList} data={images} horizontal pagingEnabled={images.length > 1} windowSize={2} initialNumToRender={1} maxToRenderPerBatch={1} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} initialScrollIndex={imageIndex} getItem={(_, index) => images[index]} getItemCount={() => images.length} getItemLayout={(_, index) => ({
+        <VirtualizedList ref={imageList} data={images} horizontal scrollEnabled={images.length > 1} pagingEnabled windowSize={2} initialNumToRender={1} maxToRenderPerBatch={1} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} initialScrollIndex={imageIndex} getItem={(_, index) => images[index]} getItemCount={() => images.length} getItemLayout={(_, index) => ({
         length: SCREEN_WIDTH,
         offset: SCREEN_WIDTH * index,
         index
