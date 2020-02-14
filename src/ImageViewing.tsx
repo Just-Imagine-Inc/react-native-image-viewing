@@ -102,7 +102,7 @@ function ImageViewing({
           ref={imageList}
           data={images}
           horizontal
-          pagingEnabled
+          pagingEnabled={images.length > 1}
           windowSize={2}
           initialNumToRender={1}
           maxToRenderPerBatch={1}
