@@ -29,6 +29,7 @@ type Props = {
   imageIndex: number;
   visible: boolean;
   onRequestClose: () => void;
+  onOrientationChange?: () => void;
   onImageIndexChange?: (imageIndex: number) => void;
   animationType?: "none" | "fade" | "slide";
   backgroundColor?: string;
@@ -48,6 +49,7 @@ function ImageViewing({
   imageIndex,
   visible,
   onRequestClose,
+  onOrientationChange,
   onImageIndexChange,
   animationType = DEFAULT_ANIMATION_TYPE,
   backgroundColor = DEFAULT_BG_COLOR,
@@ -86,7 +88,8 @@ function ImageViewing({
       visible={visible}
       animationType={animationType}
       onRequestClose={onRequestCloseEnhanced}
-      supportedOrientations={["portrait"]}
+      onOrientationChange={onOrientationChange}
+      supportedOrientations={["portrait", "landscape"]}
     >
       <View style={[styles.container, { opacity, backgroundColor }]}>
         <Animated.View style={[styles.header, { transform: headerTransform }]}>
