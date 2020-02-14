@@ -89,7 +89,7 @@ function ImageViewing({
       animationType={animationType}
       onRequestClose={onRequestCloseEnhanced}
       onOrientationChange={onOrientationChange}
-      supportedOrientations={["portrait", "landscape", "landscape-left", "landscape-right"]}
+      supportedOrientations={["portrait", "landscape"]}
     >
       <View style={[styles.container, { opacity, backgroundColor }]}>
         <Animated.View style={[styles.header, { transform: headerTransform }]}>

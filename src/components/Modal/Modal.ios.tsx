@@ -6,6 +6,6 @@
  *
  */
 
-import Modal from "react-native-modal";
+import { Modal } from "react-native";
 
 export default Modal;
