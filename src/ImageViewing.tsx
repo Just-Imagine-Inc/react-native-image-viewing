@@ -6,7 +6,7 @@
  *
  */
 
-import React, { ComponentType, useCallback, useEffect } from "react";
+import React, { ComponentType, useCallback, useEffect, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -42,7 +42,6 @@ type Props = {
 const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const SCREEN = Dimensions.get("screen");
-const SCREEN_WIDTH = SCREEN.width;
 
 function ImageViewing({
   images,
@@ -66,6 +65,19 @@ function ImageViewing({
     footerTransform,
     toggleBarsVisible
   ] = useAnimatedComponents();
+
+  const [screenWidth, setScreenWidth] = useState(SCREEN.width)
+  const [screenHeight, setScreenHeight] = useState(SCREEN.height)
+
+  const handleRotate = () => {
+    setScreenWidth(Dimensions.get('screen').width)
+    setScreenHeight(Dimensions.get('screen').height)
+  }
+
+  useEffect(() => {
+    Dimensions.addEventListener('change', handleRotate)
+    return () => Dimensions.removeEventListener('change', handleRotate)
+  }, [])
 
   useEffect(() => {
     if (onImageIndexChange) {
@@ -116,12 +128,14 @@ function ImageViewing({
           getItem={(_, index) => images[index]}
           getItemCount={() => images.length}
           getItemLayout={(_, index) => ({
-            length: SCREEN_WIDTH,
-            offset: SCREEN_WIDTH * index,
+            length: screenWidth,
+            offset: screenWidth * index,
             index
           })}
           renderItem={({ item: imageSrc }) => (
             <ImageItem
+              screenWidth={screenWidth}
+              screenHeight={screenHeight}
               onZoom={onZoom}
               imageSrc={imageSrc}
               onRequestClose={onRequestCloseEnhanced}

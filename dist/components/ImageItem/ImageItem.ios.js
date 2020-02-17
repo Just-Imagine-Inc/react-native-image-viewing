@@ -6,17 +6,15 @@
  *
  */
 import React, { useCallback, useRef, useState } from "react";
-import { Animated, Dimensions, ScrollView, StyleSheet, View, TouchableWithoutFeedback } from "react-native";
+import { Animated, Dimensions, ScrollView, View, TouchableWithoutFeedback } from "react-native";
 import useDoubleTapToZoom from "../../hooks/useDoubleTapToZoom";
 import useImageDimensions from "../../hooks/useImageDimensions";
 import { getImageStyles, getImageTransform } from "../../utils";
 import { ImageLoading } from "./ImageLoading";
 const SWIPE_CLOSE_OFFSET = 75;
 const SWIPE_CLOSE_VELOCITY = 1.55;
-const SCREEN = Dimensions.get("screen");
-const SCREEN_WIDTH = SCREEN.width;
-const SCREEN_HEIGHT = SCREEN.height;
-const ImageItem = ({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled = true, doubleTapToZoomEnabled = true }) => {
+const ImageItem = ({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled = true, doubleTapToZoomEnabled = true, screenWidth, screenHeight, }) => {
+    const SCREEN = Dimensions.get("screen");
     const scrollViewRef = useRef(null);
     const [loaded, setLoaded] = useState(false);
     const [scaled, setScaled] = useState(false);
@@ -54,7 +52,12 @@ const ImageItem = ({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled = tru
         scrollValueY.setValue(offsetY);
     };
     return (<View>
-      <ScrollView ref={scrollViewRef} style={styles.listItem} pinchGestureEnabled nestedScrollEnabled={true} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} maximumZoomScale={maxScale} contentContainerStyle={styles.imageScrollContainer} scrollEnabled={swipeToCloseEnabled} onScrollEndDrag={onScrollEndDrag} scrollEventThrottle={1} {...(swipeToCloseEnabled && {
+      <ScrollView ref={scrollViewRef} style={{
+        width: screenWidth,
+        height: screenHeight,
+    }} pinchGestureEnabled nestedScrollEnabled={true} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} maximumZoomScale={maxScale} contentContainerStyle={{
+        height: screenHeight
+    }} scrollEnabled={swipeToCloseEnabled} onScrollEndDrag={onScrollEndDrag} scrollEventThrottle={1} {...(swipeToCloseEnabled && {
         onScroll
     })}>
         {(!loaded || !imageDimensions) && <ImageLoading />}
@@ -64,13 +67,4 @@ const ImageItem = ({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled = tru
       </ScrollView>
     </View>);
 };
-const styles = StyleSheet.create({
-    listItem: {
-        width: SCREEN_WIDTH,
-        height: SCREEN_HEIGHT
-    },
-    imageScrollContainer: {
-        height: SCREEN_HEIGHT
-    }
-});
 export default React.memo(ImageItem);

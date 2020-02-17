@@ -13,6 +13,8 @@ declare type Props = {
     onZoom: (scaled: boolean) => void;
     swipeToCloseEnabled?: boolean;
     doubleTapToZoomEnabled?: boolean;
+    screenWidth: number;
+    screenHeight: number;
 };
-declare const _default: React.MemoExoticComponent<({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled, doubleTapToZoomEnabled }: Props) => JSX.Element>;
+declare const _default: React.MemoExoticComponent<({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled, doubleTapToZoomEnabled, screenWidth, screenHeight, }: Props) => JSX.Element>;
 export default _default;

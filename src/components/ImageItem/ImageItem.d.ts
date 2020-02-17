@@ -18,6 +18,8 @@ declare type Props = {
 };
 
 declare const _default: React.MemoExoticComponent<({
+  screenWidth,
+  screenHeight,
   imageSrc,
   onZoom,
   onRequestClose,

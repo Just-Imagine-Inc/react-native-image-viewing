@@ -12,7 +12,6 @@ import {
   Animated,
   Dimensions,
   ScrollView,
-  StyleSheet,
   View,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -28,9 +27,6 @@ import { ImageLoading } from "./ImageLoading";
 
 const SWIPE_CLOSE_OFFSET = 75;
 const SWIPE_CLOSE_VELOCITY = 1.55;
-const SCREEN = Dimensions.get("screen");
-const SCREEN_WIDTH = SCREEN.width;
-const SCREEN_HEIGHT = SCREEN.height;
 
 type Props = {
   imageSrc: ImageSource;
@@ -38,6 +34,8 @@ type Props = {
   onZoom: (scaled: boolean) => void;
   swipeToCloseEnabled?: boolean;
   doubleTapToZoomEnabled?: boolean;
+  screenWidth: number
+  screenHeight: number
 };
 
 const ImageItem = ({
@@ -45,8 +43,12 @@ const ImageItem = ({
   onZoom,
   onRequestClose,
   swipeToCloseEnabled = true,
-  doubleTapToZoomEnabled = true
+  doubleTapToZoomEnabled = true,
+  screenWidth,
+  screenHeight,
 }: Props) => {
+  const SCREEN = Dimensions.get("screen");
+
   const scrollViewRef = useRef<ScrollView>(null);
   const [loaded, setLoaded] = useState(false);
   const [scaled, setScaled] = useState(false);
@@ -105,13 +107,18 @@ const ImageItem = ({
     <View>
       <ScrollView
         ref={scrollViewRef}
-        style={styles.listItem}
+        style={{
+          width: screenWidth,
+          height: screenHeight,
+        }}
         pinchGestureEnabled
         nestedScrollEnabled={true}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         maximumZoomScale={maxScale}
-        contentContainerStyle={styles.imageScrollContainer}
+        contentContainerStyle={{
+          height: screenHeight
+        }}
         scrollEnabled={swipeToCloseEnabled}
         onScrollEndDrag={onScrollEndDrag}
         scrollEventThrottle={1}
@@ -133,15 +140,5 @@ const ImageItem = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  listItem: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT
-  },
-  imageScrollContainer: {
-    height: SCREEN_HEIGHT
-  }
-});
 
 export default React.memo(ImageItem);

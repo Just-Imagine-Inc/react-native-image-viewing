@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Animated, Dimensions, StyleSheet, View, VirtualizedList } from "react-native";
 import Modal from "./components/Modal/Modal";
 import ImageItem from "./components/ImageItem/ImageItem";
@@ -16,12 +16,21 @@ import useRequestClose from "./hooks/useRequestClose";
 const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const SCREEN = Dimensions.get("screen");
-const SCREEN_WIDTH = SCREEN.width;
 function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientationChange, onImageIndexChange, animationType = DEFAULT_ANIMATION_TYPE, backgroundColor = DEFAULT_BG_COLOR, swipeToCloseEnabled, doubleTapToZoomEnabled, HeaderComponent, FooterComponent }) {
     const imageList = React.createRef();
     const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
     const [currentImageIndex, onScroll] = useImageIndexChange(imageIndex, SCREEN);
     const [headerTransform, footerTransform, toggleBarsVisible] = useAnimatedComponents();
+    const [screenWidth, setScreenWidth] = useState(SCREEN.width);
+    const [screenHeight, setScreenHeight] = useState(SCREEN.height);
+    const handleRotate = () => {
+        setScreenWidth(Dimensions.get('screen').width);
+        setScreenHeight(Dimensions.get('screen').height);
+    };
+    useEffect(() => {
+        Dimensions.addEventListener('change', handleRotate);
+        return () => Dimensions.removeEventListener('change', handleRotate);
+    }, []);
     useEffect(() => {
         if (onImageIndexChange) {
             onImageIndexChange(currentImageIndex);
@@ -41,10 +50,10 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
     })) : (<ImageDefaultHeader onRequestClose={onRequestCloseEnhanced}/>)}
         </Animated.View>
         <VirtualizedList ref={imageList} data={images} horizontal scrollEnabled={images.length > 1} pagingEnabled windowSize={2} initialNumToRender={1} maxToRenderPerBatch={1} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} initialScrollIndex={imageIndex} getItem={(_, index) => images[index]} getItemCount={() => images.length} getItemLayout={(_, index) => ({
-        length: SCREEN_WIDTH,
-        offset: SCREEN_WIDTH * index,
+        length: screenWidth,
+        offset: screenWidth * index,
         index
-    })} renderItem={({ item: imageSrc }) => (<ImageItem onZoom={onZoom} imageSrc={imageSrc} onRequestClose={onRequestCloseEnhanced} swipeToCloseEnabled={swipeToCloseEnabled} doubleTapToZoomEnabled={doubleTapToZoomEnabled}/>)} onMomentumScrollEnd={onScroll} keyExtractor={imageSrc => imageSrc.uri}/>
+    })} renderItem={({ item: imageSrc }) => (<ImageItem screenWidth={screenWidth} screenHeight={screenHeight} onZoom={onZoom} imageSrc={imageSrc} onRequestClose={onRequestCloseEnhanced} swipeToCloseEnabled={swipeToCloseEnabled} doubleTapToZoomEnabled={doubleTapToZoomEnabled}/>)} onMomentumScrollEnd={onScroll} keyExtractor={imageSrc => imageSrc.uri}/>
         {typeof FooterComponent !== "undefined" && (<Animated.View style={[styles.footer, { transform: footerTransform }]}>
             {React.createElement(FooterComponent, {
         imageIndex: currentImageIndex
