@@ -30,7 +30,6 @@ function useDoubleTapToZoom(
   const handleDoubleTap = useCallback(
     (event: NativeSyntheticEvent<NativeTouchEvent>) => {
       const nowTS = new Date().getTime();
-      const scrollResponderRef = scrollViewRef?.current?.getScrollResponder();
 
       if (lastTapTS && nowTS - lastTapTS < DOUBLE_TAP_DELAY) {
         const { pageX, pageY } = event.nativeEvent;
@@ -48,6 +47,7 @@ function useDoubleTapToZoom(
           targetHeight = screen.height / 2;
         }
 
+        const scrollResponderRef = scrollViewRef?.current?.getScrollResponder();
         // @ts-ignore
         scrollResponderRef?.scrollResponderZoomTo({
           x: targetX,

@@ -10,6 +10,8 @@ import React from "react";
 import { ImageSource } from "../../@types";
 
 declare type Props = {
+  screenWidth: number,
+  screenHeight: number,
   imageSrc: ImageSource;
   onRequestClose: () => void;
   onZoom: (isZoomed: boolean) => void;
