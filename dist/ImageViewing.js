@@ -42,7 +42,7 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
         (_b = (_a = imageList) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.setNativeProps({ scrollEnabled: !isScaled });
         toggleBarsVisible(!isScaled);
     }, [imageList]);
-    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hideModalContentWhileAnimating scrollOffset={1} isVisible={visible} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
+    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={1} isVisible={visible} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
       <View style={[styles.container, { opacity, backgroundColor }]}>
         <Animated.View style={[styles.header, { transform: headerTransform }]}>
           {typeof HeaderComponent !== "undefined" ? (React.createElement(HeaderComponent, {

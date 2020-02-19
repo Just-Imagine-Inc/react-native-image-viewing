@@ -99,8 +99,11 @@ function ImageViewing({
       style={{ margin: 0 }}
       propagateSwipe
       useNativeDriver
+      hardwareAccelerated
       hideModalContentWhileAnimating
-      scrollOffset={1}
+      hasBackdrop
+      backdropColor='black'
+      backdropOpacity={1}
       isVisible={visible}
       animationIn='fadeIn'
       animationOut='fadeOut'
