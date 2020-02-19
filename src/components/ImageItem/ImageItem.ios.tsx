@@ -74,8 +74,6 @@ const ImageItem = ({
     scaleValue
   );
 
-  // const [imageStylesWithOpacity, setImageStylesWithOpacity] =
-  //   useState({ ...imagesStyles, opacity: imageOpacity });
   const imageStylesWithOpacity = { ...imagesStyles, opacity: imageOpacity}
 
   const zoomOut = useCallback(() => {
@@ -157,7 +155,7 @@ const ImageItem = ({
         >
           <Animated.Image
             source={imageSrc}
-            style={imageStylesWithOpacity}
+            style={[imageStylesWithOpacity]}
             onLoad={() => setLoaded(true)}
           />
         </TouchableWithoutFeedback>

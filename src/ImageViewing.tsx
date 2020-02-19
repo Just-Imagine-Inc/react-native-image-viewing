@@ -96,11 +96,15 @@ function ImageViewing({
 
   return (
     <Modal
-      transparent
-      visible={visible}
-      animationType={animationType}
-      onRequestClose={onRequestCloseEnhanced}
-      onOrientationChange={onOrientationChange}
+      style={{ margin: 0 }}
+      propagateSwipe
+      useNativeDriver
+      hideModalContentWhileAnimating
+      scrollOffset={1}
+      isVisible={visible}
+      animationIn='fadeIn'
+      animationOut='fadeOut'
+      onModalWillHide={onRequestCloseEnhanced}
       supportedOrientations={["portrait", "landscape"]}
     >
       <View style={[styles.container, { opacity, backgroundColor }]}>
