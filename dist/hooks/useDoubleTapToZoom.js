@@ -16,6 +16,7 @@ function useDoubleTapToZoom(scrollViewRef, scaled, screen) {
     const handleDoubleTap = useCallback((event) => {
         var _a, _b, _c;
         const nowTS = new Date().getTime();
+        const scrollResponderRef = (_b = (_a = scrollViewRef) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.getScrollResponder();
         if (lastTapTS && nowTS - lastTapTS < DOUBLE_TAP_DELAY) {
             const { pageX, pageY } = event.nativeEvent;
             let targetX = 0;
@@ -30,7 +31,6 @@ function useDoubleTapToZoom(scrollViewRef, scaled, screen) {
                 targetWidth = screen.width / 2;
                 targetHeight = screen.height / 2;
             }
-            const scrollResponderRef = (_b = (_a = scrollViewRef) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.getScrollResponder();
             // @ts-ignore
             (_c = scrollResponderRef) === null || _c === void 0 ? void 0 : _c.scrollResponderZoomTo({
                 x: targetX,

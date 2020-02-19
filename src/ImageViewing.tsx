@@ -96,7 +96,7 @@ function ImageViewing({
 
   return (
     <Modal
-      transparent={false}
+      transparent
       visible={visible}
       animationType={animationType}
       onRequestClose={onRequestCloseEnhanced}

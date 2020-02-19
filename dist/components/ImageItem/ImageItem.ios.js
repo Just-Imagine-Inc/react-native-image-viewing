@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Animated, Dimensions, ScrollView, View, TouchableWithoutFeedback } from "react-native";
 import useDoubleTapToZoom from "../../hooks/useDoubleTapToZoom";
 import useImageDimensions from "../../hooks/useImageDimensions";
@@ -14,13 +14,13 @@ import { ImageLoading } from "./ImageLoading";
 const SWIPE_CLOSE_OFFSET = 75;
 const SWIPE_CLOSE_VELOCITY = 1.55;
 const ImageItem = ({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled = true, doubleTapToZoomEnabled = true, screenWidth, screenHeight, }) => {
-    const screen = Dimensions.get("screen");
+    const SCREEN = Dimensions.get("screen");
     const scrollViewRef = useRef(null);
     const [loaded, setLoaded] = useState(false);
     const [scaled, setScaled] = useState(false);
     const imageDimensions = useImageDimensions(imageSrc);
-    const handleDoubleTap = useDoubleTapToZoom(scrollViewRef, scaled, screen);
-    const [translate, scale] = getImageTransform(imageDimensions, screen);
+    const handleDoubleTap = useDoubleTapToZoom(scrollViewRef, scaled, SCREEN);
+    const [translate, scale] = getImageTransform(imageDimensions, SCREEN);
     const scrollValueY = new Animated.Value(0);
     const scaleValue = new Animated.Value(scale || 1);
     const translateValue = new Animated.ValueXY(translate);
@@ -30,27 +30,7 @@ const ImageItem = ({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled = tru
         outputRange: [0.5, 1, 0.5]
     });
     const imagesStyles = getImageStyles(imageDimensions, translateValue, scaleValue);
-    // const [imageStylesWithOpacity, setImageStylesWithOpacity] =
-    //   useState({ ...imagesStyles, opacity: imageOpacity });
     const imageStylesWithOpacity = { ...imagesStyles, opacity: imageOpacity };
-    const zoomOut = useCallback(() => {
-        var _a, _b, _c;
-        const scrollResponderRef = (_b = (_a = scrollViewRef) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.getScrollResponder();
-        // @ts-ignore
-        (_c = scrollResponderRef) === null || _c === void 0 ? void 0 : _c.scrollResponderZoomTo({
-            x: 0,
-            y: 0,
-            width: screenWidth,
-            height: screenHeight,
-            animated: true
-        });
-    }, [screenWidth]);
-    useEffect(() => {
-        // zoom out on rotate
-        if (scaled) {
-            zoomOut();
-        }
-    }, [screenWidth]);
     const onScrollEndDrag = useCallback(({ nativeEvent }) => {
         var _a, _b, _c, _d;
         const velocityY = (_c = (_b = (_a = nativeEvent) === null || _a === void 0 ? void 0 : _a.velocity) === null || _b === void 0 ? void 0 : _b.y, (_c !== null && _c !== void 0 ? _c : 0));
