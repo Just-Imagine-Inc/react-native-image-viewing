@@ -25,6 +25,7 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
     const [screenWidth, setScreenWidth] = useState(SCREEN.width);
     const [screenHeight, setScreenHeight] = useState(SCREEN.height);
     const scrollValueY = new Animated.Value(0);
+    const [backdropOpacity, setBackdropOpacity] = useState(1);
     const bgOpacity = scrollValueY.interpolate({
         inputRange: [-SWIPE_CLOSE_OFFSET, 0, SWIPE_CLOSE_OFFSET],
         outputRange: [0.75, 1, 0.75]
@@ -47,9 +48,10 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
         toggleBarsVisible(!isScaled);
     }, [imageList]);
     const onImageScrollSwipe = (scrollValue) => {
+        setBackdropOpacity(Math.abs(scrollValue) > 0 ? 0 : 1);
         scrollValueY.setValue(scrollValue);
     };
-    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={0} isVisible={visible} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
+    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={backdropOpacity} isVisible={visible} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
       <Animated.View style={[styles.scrim, {
             opacity: bgOpacity,
             backgroundColor

@@ -72,6 +72,7 @@ function ImageViewing({
   const [screenHeight, setScreenHeight] = useState(SCREEN.height)
 
   const scrollValueY = new Animated.Value(0)
+  const [backdropOpacity, setBackdropOpacity] = useState(1)
 
   const bgOpacity = scrollValueY.interpolate({
     inputRange: [-SWIPE_CLOSE_OFFSET, 0, SWIPE_CLOSE_OFFSET],
@@ -102,6 +103,7 @@ function ImageViewing({
   );
 
   const onImageScrollSwipe = (scrollValue: number) => {
+    setBackdropOpacity(Math.abs(scrollValue) > 0 ? 0 : 1)
     scrollValueY.setValue(scrollValue)
   }
 
@@ -114,7 +116,7 @@ function ImageViewing({
       hideModalContentWhileAnimating
       hasBackdrop
       backdropColor='black'
-      backdropOpacity={0}
+      backdropOpacity={backdropOpacity}
       isVisible={visible}
       animationIn='fadeIn'
       animationOut='fadeOut'
