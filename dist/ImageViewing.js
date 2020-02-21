@@ -6,7 +6,7 @@
  *
  */
 import React, { useCallback, useEffect, useState } from "react";
-import { Animated, Dimensions, StyleSheet, View, VirtualizedList } from "react-native";
+import { Animated, Dimensions, StyleSheet, View } from "react-native";
 import Modal from "./components/Modal/Modal";
 import ImageItem from "./components/ImageItem/ImageItem";
 import ImageDefaultHeader from "./components/ImageDefaultHeader";
@@ -16,6 +16,7 @@ import useRequestClose from "./hooks/useRequestClose";
 const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const SCREEN = Dimensions.get("screen");
+const SWIPE_CLOSE_OFFSET = 75;
 function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientationChange, onImageIndexChange, animationType = DEFAULT_ANIMATION_TYPE, backgroundColor = DEFAULT_BG_COLOR, swipeToCloseEnabled, doubleTapToZoomEnabled, HeaderComponent, FooterComponent }) {
     const imageList = React.createRef();
     const [opacity, onRequestCloseEnhanced] = useRequestClose(onRequestClose);
@@ -23,37 +24,46 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
     const [headerTransform, footerTransform, toggleBarsVisible] = useAnimatedComponents();
     const [screenWidth, setScreenWidth] = useState(SCREEN.width);
     const [screenHeight, setScreenHeight] = useState(SCREEN.height);
-    const handleRotate = () => {
-        setScreenWidth(Dimensions.get('screen').width);
-        setScreenHeight(Dimensions.get('screen').height);
-    };
+    const scrollValueY = new Animated.Value(0);
+    const bgOpacity = scrollValueY.interpolate({
+        inputRange: [-SWIPE_CLOSE_OFFSET, 0, SWIPE_CLOSE_OFFSET],
+        outputRange: [0.75, 1, 0.75]
+    });
     useEffect(() => {
         Dimensions.addEventListener('change', handleRotate);
         return () => Dimensions.removeEventListener('change', handleRotate);
     }, []);
     useEffect(() => {
-        if (onImageIndexChange) {
-            onImageIndexChange(currentImageIndex);
-        }
+        onImageIndexChange && onImageIndexChange(currentImageIndex);
     }, [currentImageIndex]);
+    const handleRotate = () => {
+        setScreenWidth(Dimensions.get('screen').width);
+        setScreenHeight(Dimensions.get('screen').height);
+    };
     const onZoom = useCallback((isScaled) => {
         var _a, _b;
         // @ts-ignore
         (_b = (_a = imageList) === null || _a === void 0 ? void 0 : _a.current) === null || _b === void 0 ? void 0 : _b.setNativeProps({ scrollEnabled: !isScaled });
         toggleBarsVisible(!isScaled);
     }, [imageList]);
-    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={1} isVisible={visible} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
-      <View style={[styles.container, { opacity, backgroundColor }]}>
+    const onImageScrollSwipe = (scrollValue) => {
+        scrollValueY.setValue(scrollValue);
+    };
+    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={0} isVisible={visible} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
+      <Animated.View style={[styles.scrim, {
+            opacity: bgOpacity,
+            backgroundColor
+        }]}/>
+      <View style={[styles.container, { opacity }]}>
         <Animated.View style={[styles.header, { transform: headerTransform }]}>
           {typeof HeaderComponent !== "undefined" ? (React.createElement(HeaderComponent, {
         imageIndex: currentImageIndex
     })) : (<ImageDefaultHeader onRequestClose={onRequestCloseEnhanced}/>)}
         </Animated.View>
-        <VirtualizedList ref={imageList} data={images} horizontal scrollEnabled={images.length > 1} pagingEnabled windowSize={2} initialNumToRender={1} maxToRenderPerBatch={1} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} initialScrollIndex={imageIndex} getItem={(_, index) => images[index]} getItemCount={() => images.length} getItemLayout={(_, index) => ({
-        length: screenWidth,
-        offset: screenWidth * index,
-        index
-    })} renderItem={({ item: imageSrc }) => (<ImageItem screenWidth={screenWidth} screenHeight={screenHeight} onZoom={onZoom} imageSrc={imageSrc} onRequestClose={onRequestCloseEnhanced} swipeToCloseEnabled={swipeToCloseEnabled} doubleTapToZoomEnabled={doubleTapToZoomEnabled}/>)} onMomentumScrollEnd={onScroll} keyExtractor={imageSrc => imageSrc.uri}/>
+        
+            <ImageItem screenWidth={screenWidth} screenHeight={screenHeight} onZoom={onZoom} imageSrc={images[0]} //imageSrc}
+     onScrollSwipe={onImageScrollSwipe} onRequestClose={onRequestCloseEnhanced} swipeToCloseEnabled={swipeToCloseEnabled} doubleTapToZoomEnabled={doubleTapToZoomEnabled}/>
+          
         {typeof FooterComponent !== "undefined" && (<Animated.View style={[styles.footer, { transform: footerTransform }]}>
             {React.createElement(FooterComponent, {
         imageIndex: currentImageIndex
@@ -65,6 +75,13 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    scrim: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         backgroundColor: "#000"
     },
     header: {

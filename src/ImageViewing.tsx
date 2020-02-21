@@ -43,6 +43,8 @@ const DEFAULT_ANIMATION_TYPE = "fade";
 const DEFAULT_BG_COLOR = "#000";
 const SCREEN = Dimensions.get("screen");
 
+const SWIPE_CLOSE_OFFSET = 75;
+
 function ImageViewing({
   images,
   imageIndex,
@@ -69,10 +71,12 @@ function ImageViewing({
   const [screenWidth, setScreenWidth] = useState(SCREEN.width)
   const [screenHeight, setScreenHeight] = useState(SCREEN.height)
 
-  const handleRotate = () => {
-    setScreenWidth(Dimensions.get('screen').width)
-    setScreenHeight(Dimensions.get('screen').height)
-  }
+  const scrollValueY = new Animated.Value(0)
+
+  const bgOpacity = scrollValueY.interpolate({
+    inputRange: [-SWIPE_CLOSE_OFFSET, 0, SWIPE_CLOSE_OFFSET],
+    outputRange: [0.75, 1, 0.75]
+  });
 
   useEffect(() => {
     Dimensions.addEventListener('change', handleRotate)
@@ -80,10 +84,13 @@ function ImageViewing({
   }, [])
 
   useEffect(() => {
-    if (onImageIndexChange) {
-      onImageIndexChange(currentImageIndex);
-    }
+    onImageIndexChange && onImageIndexChange(currentImageIndex)
   }, [currentImageIndex]);
+
+  const handleRotate = () => {
+    setScreenWidth(Dimensions.get('screen').width)
+    setScreenHeight(Dimensions.get('screen').height)
+  }
 
   const onZoom = useCallback(
     (isScaled: boolean) => {
@@ -94,6 +101,10 @@ function ImageViewing({
     [imageList]
   );
 
+  const onImageScrollSwipe = (scrollValue: number) => {
+    scrollValueY.setValue(scrollValue)
+  }
+
   return (
     <Modal
       style={{ margin: 0 }}
@@ -103,14 +114,22 @@ function ImageViewing({
       hideModalContentWhileAnimating
       hasBackdrop
       backdropColor='black'
-      backdropOpacity={1}
+      backdropOpacity={0}
       isVisible={visible}
       animationIn='fadeIn'
       animationOut='fadeOut'
       onModalWillHide={onRequestCloseEnhanced}
       supportedOrientations={["portrait", "landscape"]}
     >
-      <View style={[styles.container, { opacity, backgroundColor }]}>
+      <Animated.View
+        style={
+          [styles.scrim, {
+            opacity: bgOpacity,
+            backgroundColor
+          }]
+        }
+      />
+      <View style={[styles.container, { opacity }]}>
         <Animated.View style={[styles.header, { transform: headerTransform }]}>
           {typeof HeaderComponent !== "undefined" ? (
             React.createElement(HeaderComponent, {
@@ -120,11 +139,13 @@ function ImageViewing({
             <ImageDefaultHeader onRequestClose={onRequestCloseEnhanced} />
           )}
         </Animated.View>
+        {/* Removing this until we want to support carousel viewing of all images in chat.
         <VirtualizedList
           ref={imageList}
           data={images}
           horizontal
           scrollEnabled={images.length > 1}
+          bounces={images.length > 1}
           pagingEnabled
           windowSize={2}
           initialNumToRender={1}
@@ -140,19 +161,21 @@ function ImageViewing({
             index
           })}
           renderItem={({ item: imageSrc }) => (
+        */}
             <ImageItem
               screenWidth={screenWidth}
               screenHeight={screenHeight}
               onZoom={onZoom}
-              imageSrc={imageSrc}
+              imageSrc={images[0]}//imageSrc}
+              onScrollSwipe={onImageScrollSwipe}
               onRequestClose={onRequestCloseEnhanced}
               swipeToCloseEnabled={swipeToCloseEnabled}
               doubleTapToZoomEnabled={doubleTapToZoomEnabled}
             />
-          )}
+          {/* )}
           onMomentumScrollEnd={onScroll}
           keyExtractor={imageSrc => imageSrc.uri}
-        />
+        /> */}
         {typeof FooterComponent !== "undefined" && (
           <Animated.View
             style={[styles.footer, { transform: footerTransform }]}
@@ -170,6 +193,13 @@ function ImageViewing({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrim: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: "#000"
   },
   header: {

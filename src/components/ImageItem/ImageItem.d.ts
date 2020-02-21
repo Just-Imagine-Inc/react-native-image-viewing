@@ -14,6 +14,7 @@ declare type Props = {
   screenHeight: number,
   imageSrc: ImageSource;
   onRequestClose: () => void;
+  onScrollSwipe: (scrollValue: number) => void;
   onZoom: (isZoomed: boolean) => void;
   swipeToCloseEnabled?: boolean;
   doubleTapToZoomEnabled?: boolean;
@@ -25,6 +26,7 @@ declare const _default: React.MemoExoticComponent<({
   imageSrc,
   onZoom,
   onRequestClose,
+  onScrollSwipe,
   swipeToCloseEnabled
 }: Props) => JSX.Element>;
 

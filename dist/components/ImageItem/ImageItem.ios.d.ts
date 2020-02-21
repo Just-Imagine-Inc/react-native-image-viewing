@@ -9,6 +9,7 @@ import React from "react";
 import { ImageSource } from "../../@types";
 declare type Props = {
     imageSrc: ImageSource;
+    onScrollSwipe: (scrollValue: number) => void;
     onRequestClose: () => void;
     onZoom: (scaled: boolean) => void;
     swipeToCloseEnabled?: boolean;
@@ -16,5 +17,5 @@ declare type Props = {
     screenWidth: number;
     screenHeight: number;
 };
-declare const _default: React.MemoExoticComponent<({ imageSrc, onZoom, onRequestClose, swipeToCloseEnabled, doubleTapToZoomEnabled, screenWidth, screenHeight, }: Props) => JSX.Element>;
+declare const _default: React.MemoExoticComponent<({ imageSrc, onZoom, onRequestClose, onScrollSwipe, swipeToCloseEnabled, doubleTapToZoomEnabled, screenWidth, screenHeight, }: Props) => JSX.Element>;
 export default _default;
