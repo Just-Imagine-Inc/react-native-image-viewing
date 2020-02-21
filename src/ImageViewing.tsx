@@ -80,9 +80,16 @@ function ImageViewing({
   });
 
   useEffect(() => {
-    Dimensions.addEventListener('change', handleRotate)
     return () => Dimensions.removeEventListener('change', handleRotate)
   }, [])
+
+  useEffect(() => {
+    if(visible === true) {
+      Dimensions.addEventListener('change', handleRotate)
+    } else if(visible === false) {
+      Dimensions.removeEventListener('change', handleRotate)
+    }
+  }, [visible])
 
   useEffect(() => {
     onImageIndexChange && onImageIndexChange(currentImageIndex)
@@ -91,6 +98,7 @@ function ImageViewing({
   const handleRotate = () => {
     setScreenWidth(Dimensions.get('screen').width)
     setScreenHeight(Dimensions.get('screen').height)
+    setBackdropOpacity(1)
   }
 
   const onZoom = useCallback(
@@ -103,7 +111,13 @@ function ImageViewing({
   );
 
   const onImageScrollSwipe = (scrollValue: number) => {
-    setBackdropOpacity(Math.abs(scrollValue) > 0 ? 0 : 1)
+    let absScrollValue = Math.abs(scrollValue)
+    if(absScrollValue > 0 && backdropOpacity === 1) {
+      setBackdropOpacity(0)
+    } else if(absScrollValue === 0 && backdropOpacity === 0) {
+      setBackdropOpacity(1)
+    }
+
     scrollValueY.setValue(scrollValue)
   }
 
@@ -117,7 +131,7 @@ function ImageViewing({
       hasBackdrop
       backdropColor='black'
       backdropOpacity={backdropOpacity}
-      isVisible={visible}
+      isVisible={visible === true}
       animationIn='fadeIn'
       animationOut='fadeOut'
       onModalWillHide={onRequestCloseEnhanced}

@@ -71,7 +71,7 @@ const ImageItem = ({ imageSrc, onZoom, onRequestClose, onScrollSwipe, swipeToClo
         width: screenWidth,
         height: screenHeight,
     }} pinchGestureEnabled nestedScrollEnabled={true} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} maximumZoomScale={maxScale} contentContainerStyle={{
-        height: screenHeight
+        height: screenHeight,
     }} scrollEnabled={swipeToCloseEnabled} onScrollEndDrag={onScrollEndDrag} scrollEventThrottle={1} {...(swipeToCloseEnabled && {
         onScroll
     })}>

@@ -136,9 +136,8 @@ const ImageItem = ({
         showsVerticalScrollIndicator={false}
         maximumZoomScale={maxScale}
         contentContainerStyle={{
-          height: screenHeight
+          height: screenHeight,
         }}
-
         scrollEnabled={swipeToCloseEnabled}
         onScrollEndDrag={onScrollEndDrag}
         scrollEventThrottle={1}

@@ -31,15 +31,23 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
         outputRange: [0.75, 1, 0.75]
     });
     useEffect(() => {
-        Dimensions.addEventListener('change', handleRotate);
         return () => Dimensions.removeEventListener('change', handleRotate);
     }, []);
+    useEffect(() => {
+        if (visible === true) {
+            Dimensions.addEventListener('change', handleRotate);
+        }
+        else if (visible === false) {
+            Dimensions.removeEventListener('change', handleRotate);
+        }
+    }, [visible]);
     useEffect(() => {
         onImageIndexChange && onImageIndexChange(currentImageIndex);
     }, [currentImageIndex]);
     const handleRotate = () => {
         setScreenWidth(Dimensions.get('screen').width);
         setScreenHeight(Dimensions.get('screen').height);
+        setBackdropOpacity(1);
     };
     const onZoom = useCallback((isScaled) => {
         var _a, _b;
@@ -48,10 +56,16 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
         toggleBarsVisible(!isScaled);
     }, [imageList]);
     const onImageScrollSwipe = (scrollValue) => {
-        setBackdropOpacity(Math.abs(scrollValue) > 0 ? 0 : 1);
+        let absScrollValue = Math.abs(scrollValue);
+        if (absScrollValue > 0 && backdropOpacity === 1) {
+            setBackdropOpacity(0);
+        }
+        else if (absScrollValue === 0 && backdropOpacity === 0) {
+            setBackdropOpacity(1);
+        }
         scrollValueY.setValue(scrollValue);
     };
-    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={backdropOpacity} isVisible={visible} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
+    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={backdropOpacity} isVisible={visible === true} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
       <Animated.View style={[styles.scrim, {
             opacity: bgOpacity,
             backgroundColor
