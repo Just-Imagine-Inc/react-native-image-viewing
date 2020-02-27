@@ -65,7 +65,9 @@ function ImageViewing({ images, imageIndex, visible, onRequestClose, onOrientati
         }
         scrollValueY.setValue(scrollValue);
     };
-    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={backdropOpacity} isVisible={visible === true} animationIn='fadeIn' animationOut='fadeOut' onModalWillHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
+    return (<Modal style={{ margin: 0 }} propagateSwipe useNativeDriver hardwareAccelerated hideModalContentWhileAnimating hasBackdrop backdropColor='black' backdropOpacity={backdropOpacity} isVisible={visible === true} animationIn='fadeIn' animationOut='fadeOut' 
+    // onModalWillHide={onRequestCloseEnhanced}
+    onModalHide={onRequestCloseEnhanced} supportedOrientations={["portrait", "landscape"]}>
       <Animated.View style={[styles.scrim, {
             opacity: bgOpacity,
             backgroundColor
