@@ -134,8 +134,7 @@ function ImageViewing({
       isVisible={visible === true}
       animationIn='fadeIn'
       animationOut='fadeOut'
-      // onModalWillHide={onRequestCloseEnhanced}
-      onModalHide={onRequestCloseEnhanced}
+      onModalWillHide={onRequestCloseEnhanced}
       supportedOrientations={["portrait", "landscape"]}
     >
       <Animated.View
